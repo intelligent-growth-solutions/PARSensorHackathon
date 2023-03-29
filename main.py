@@ -1,5 +1,10 @@
-def main():
-    print("hola")
+import connect
 
-if "__name__" == __main__:
+def main():
+    o: object
+    q = connect.Quantum(o)
+    print(q.read_voltage())
+    return
+
+if __name__ == "__main__":
     main()
