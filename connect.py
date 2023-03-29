@@ -1,4 +1,4 @@
-import serial
+from serial import Serial
 
 from time import sleep
 
@@ -39,13 +39,14 @@ class Quantum(object):
 
         and attempts to read the calibration values"""
 
-        port = 'COM1'  # you'll have to check your device manager and put the actual com port here
+        port = 'COM3'  # you'll have to check your device manager and put the actual com port here
 
-        self.quantum = serial(port, 115200, timeout=0.5)
+        self.quantum = Serial(port, 115200, timeout=0.5)
 
         try:
 
-            self.quantum.write(READ_CALIBRATION)
+            my_str_as_bytes = str.encode(READ_CALIBRATION)
+            self.quantum.write(my_str_as_bytes)
 
             multiplier = self.quantum.read(5)[1:]
 
@@ -55,11 +56,9 @@ class Quantum(object):
 
             self.offset = struct.unpack('<f', offset)[0]
 
-        except (IOError, struct.Error) as data:
+        except (IOError) as data:
 
-            print
-            data
-
+            print ("what")
             self.quantum = None
 
     def get_micromoles(self):
@@ -118,7 +117,8 @@ class Quantum(object):
 
             try:
 
-                self.quantum.write(GET_VOLT)
+                my_str_as_bytes = str.encode(GET_VOLT)
+                self.quantum.write(my_str_as_bytes)
 
                 response = self.quantum.read(5)[1:]
 
