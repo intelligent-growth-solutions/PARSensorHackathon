@@ -68,6 +68,8 @@ def on_publish(client, userdata, mid):
   return
 
 def on_message(client, userdata, message):
+    if position_index > 24:
+       return
     print("Received event: ", message.payload)
     if "TRUE" not in str(message.payload):
         return
@@ -79,6 +81,7 @@ def on_message(client, userdata, message):
     print(reading)
     # got to next position
     go_to_next_position(client)
+    print(position_index)
 
 def on_subscribe(client, userdata, mid, qos):
    print("subscribed")
