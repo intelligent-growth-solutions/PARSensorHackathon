@@ -40,6 +40,6 @@ class Railway:
 
         # TODO replace with instruction call
         messagebox.showinfo("Button pressed", "Button pressed")
-        
+
         self.readings_button.state(['!disabled'])
 
