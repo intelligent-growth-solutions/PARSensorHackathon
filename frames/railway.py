@@ -1,6 +1,8 @@
+from array import array
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
@@ -51,18 +53,13 @@ class Railway:
         plt.style.use('_mpl-gallery-nogrid')
 
         data = self.get_data()
-        x_coords, y_coords, z_coords = self.generate_pcolourmesh_grid(data)
+        coord_data: (int, int, float) = self.generate_pcolourmesh_grid(data)
 
-
-        # make data with uneven sampling in x
-        X, Y = np.meshgrid(x_coords, y_coords)
-        Z = z_coords
-        # Z = (1 - X / 2 + X ** 5 + Y ** 3) * np.exp(-X ** 2 - Y ** 2)
-
-        # plot
         fig, ax = plt.subplots()
+        x, y, z = zip(*coord_data)
+        ax = np.array(z).reshape((5, 5))
 
-        ax.pcolormesh(X, Y, Z)
+        plt.imshow(ax, cmap='Blues')
 
         canvas = FigureCanvasTkAgg(fig, master=frame.master)
         canvas.draw()
@@ -73,24 +70,24 @@ class Railway:
         tray_width = 500
         tray_height = 800
 
-        x_coords = []
-        y_coords = []
-        z_coords = []
+        coords: array[int, int, float] = []
 
         for x in range(5):
             for y in range(5):
-                x_coords.append((tray_width * x/5) + (tray_width * 1/2))
-                y_coords.append((tray_height * y/5) + (tray_height * 1/2))
-                z_coords.append(data[x][y])
+                coords.append((
+                    int(((tray_width * x/5) + (tray_width * 1/2))),
+                    int(((tray_height * y/5) + (tray_height * 1/2))),
+                    (data[x][y])
+                ))
 
-        return x_coords, y_coords, z_coords
+        return coords
 
     def get_data(self):
         return [
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5],
-            [0, 1, 2, 3, 4, 5]
+            [0, 1, 2, 3, 4],
+            [0, 1, 2, 3, 4],
+            [0, 1, 2, 3, 4],
+            [0, 1, 2, 3, 4],
+            [0, 1, 2, 3, 4]
          ]
 
