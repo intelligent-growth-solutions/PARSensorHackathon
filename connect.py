@@ -45,8 +45,8 @@ class Quantum(object):
 
         try:
 
-            my_str_as_bytes = str.encode(READ_CALIBRATION)
-            self.quantum.write(my_str_as_bytes)
+            bytes = str.encode(READ_CALIBRATION)
+            self.quantum.write(bytes)
 
             multiplier = self.quantum.read(5)[1:]
 
@@ -117,8 +117,8 @@ class Quantum(object):
 
             try:
 
-                my_str_as_bytes = str.encode(GET_VOLT)
-                self.quantum.write(my_str_as_bytes)
+                bytes = str.encode(GET_VOLT)
+                self.quantum.write(bytes)
 
                 response = self.quantum.read(5)[1:]
 

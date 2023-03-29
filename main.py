@@ -7,7 +7,7 @@ def main():
     while True:
         voltage = q.read_voltage()
         print(voltage)
-        time.sleep(1)
+        #time.sleep(1)
         
 if __name__ == "__main__":
     main()
