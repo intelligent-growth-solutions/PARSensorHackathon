@@ -1,4 +1,4 @@
-import serial
+from serial import Serial
 
 from time import sleep
 
@@ -41,7 +41,7 @@ class Quantum(object):
 
         port = 'COM1'  # you'll have to check your device manager and put the actual com port here
 
-        self.quantum = serial(port, 115200, timeout=0.5)
+        self.quantum = Serial(port, 115200, timeout=0.5)
 
         try:
 

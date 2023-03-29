@@ -1,8 +1,8 @@
 import connect
 
 def main():
-    o: object
-    q = connect.Quantum(o)
+    o = object()
+    q = connect.Quantum()
     print(q.read_voltage())
     return
 
