@@ -15,7 +15,6 @@ class Railway:
         self.railway_frame = self.add_frame(self.root)
         self.add_label(self.railway_frame)
         self.readings_button = self.add_take_readings_button(self.railway_frame)
-        self.add_colour_mesh_chart(self.railway_frame)
 
     def get_railway_frame(self):
         return self.railway_frame
@@ -45,14 +44,15 @@ class Railway:
         self.readings_button.state(['disabled'])
 
         # TODO replace with instruction call
-        messagebox.showinfo("Button pressed", "Button pressed")
+        feed_in_data = self.get_data()
+        # simulate waiting for data
+        self.add_colour_mesh_chart(feed_in_data)
+        messagebox.showinfo("Data loaded", "Data loaded")
 
         self.readings_button.state(['!disabled'])
 
-    def add_colour_mesh_chart(self, frame: Frame):
+    def add_colour_mesh_chart(self, data):
         plt.style.use('_mpl-gallery-nogrid')
-
-        data = self.get_data()
         coord_data: (int, int, float) = self.generate_pcolourmesh_grid(data)
 
         fig, ax = plt.subplots()
@@ -61,7 +61,7 @@ class Railway:
 
         plt.imshow(ax, cmap='Blues')
 
-        canvas = FigureCanvasTkAgg(fig, master=frame.master)
+        canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
 
         canvas.get_tk_widget().pack()
