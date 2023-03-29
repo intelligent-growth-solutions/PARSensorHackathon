@@ -13,7 +13,7 @@ class Railway:
         self.railway_frame = self.add_frame(self.root)
         self.add_label(self.railway_frame)
         self.readings_button = self.add_take_readings_button(self.railway_frame)
-        self.add_colour_mesh_chart(railway_frame)
+        self.add_colour_mesh_chart(self.railway_frame)
 
     def get_railway_frame(self):
         return self.railway_frame
