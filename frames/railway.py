@@ -21,12 +21,12 @@ class Railway:
         return self.railway_frame
 
     @staticmethod
-    def add_frame(root: Tk):
+    def add_frame(root):
         frame = Frame(root)
         return frame
 
     @staticmethod
-    def add_label(frame: Frame):
+    def add_label(frame):
         label = ttk.Label(frame, text="Example tab")
         label.grid(column=0,
                    row=0,
@@ -42,23 +42,38 @@ class Railway:
         return button
 
     def take_readings(self):
-        self.readings_button.state(['disabled'])
+        #self.readings_button.state(['disabled'])
 
         # TODO replace with instruction call
-        feed_in_data = self.get_data()
+        #feed_in_data = self.get_data()
         # simulate waiting for data
-        self.add_colour_mesh_chart(feed_in_data)
+        #print(feed_in_data)
+        print(str(self.readings))
+        data = self.readings
+        self.add_colour_mesh_chart(data)
         messagebox.showinfo("Data loaded", "Data loaded")
 
         self.readings_button.state(['!disabled'])
 
-    def add_colour_mesh_chart(self, data):
+    def add_colour_mesh_chart(self, readings):
+        coords = [
+            [50, 80, 0.0019027228467166425],
+            [50, 240, 0.0019050051923841238],
+            [150, 80, 0.0017148582730442286],
+            [150, 240, 0.0017062114784494042]
+        ]
+        print(type(coords))
+        print(type(readings))
+
+        print(coords)
+        print(readings)
+
         plt.style.use('_mpl-gallery-nogrid')
-        coord_data: (int, int, float) = self.generate_pcolourmesh_grid(data)
+        coord_data: (int, int, float) = self.generate_pcolourmesh_grid(readings)
 
         fig, ax = plt.subplots()
-        x, y, z = zip(*coord_data)
-        ax = np.array(z).reshape((5, 5))
+        x, y, z = zip(*readings)
+        ax = np.array(z).reshape((3,3))
 
         plt.imshow(ax, cmap='Blues')
 
@@ -72,25 +87,37 @@ class Railway:
         tray_height = 800
 
         i = 0
-        coords: array[int, int, float] = []
+        # coords: array[int, int, float] = []
+        #
+        # for x in range(2):
+        #     for y in range(2):
+        #         coords.append((
+        #             int(((tray_width * x/5) + (tray_width * 1/2))),
+        #             int(((tray_height * y/5) + (tray_height * 1/2))),
+        #             (data[i])
+        #         ))
+        #         print("X: {}, Y: {}".format(x, y))
+        #         i += 1
 
-        for x in range(5):
-            for y in range(5):
-                coords.append((
-                    int(((tray_width * x/5) + (tray_width * 1/2))),
-                    int(((tray_height * y/5) + (tray_height * 1/2))),
-                    (data[i])
-                ))
-                i += 1
+        coords = [
+            [50, 80, 0.0019027228467166425],
+            [50, 240, 0.0019050051923841238],
+            [150, 80, 0.0017148582730442286],
+            [150, 240, 0.0017062114784494042]
+        ]
 
         return coords
 
-    def get_data(self):
-        return [
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4]
-         ]
-
+    #def get_data(self, ):
+        # return [
+        #     [0, 1, 2, 3, 4],
+        #     [0, 1, 2, 3, 4],
+        #     [0, 1, 2, 3, 4],
+        #     [0, 1, 2, 3, 4],
+        #     [0, 1, 2, 3, 4]
+        #  ]
+        # return [
+        #     [0, 1],
+        #     [0, 1]
+        # ]
+        #return read

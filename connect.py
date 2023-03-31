@@ -40,13 +40,11 @@ class Quantum(object):
         and attempts to read the calibration values"""
 
         port = 'COM3'  # you'll have to check your device manager and put the actual com port here
-
         self.quantum = Serial(port, 115200, timeout=0.5)
 
         try:
 
-            bytes = str.encode(READ_CALIBRATION)
-            self.quantum.write(bytes)
+            self.quantum.write(READ_CALIBRATION.encode())
 
             multiplier = self.quantum.read(5)[1:]
 
@@ -56,16 +54,23 @@ class Quantum(object):
 
             self.offset = struct.unpack('<f', offset)[0]
 
-        except (IOError) as data:
 
-            print ("what")
+        except (IOError):
+
+            print("IOError")
+
             self.quantum = None
 
+    def get_voltage(self):
+        voltage = self.read_voltage()
+        print(type(voltage))
+        return voltage
     def get_micromoles(self):
 
         """This function converts the voltage to micromoles"""
 
         voltage = self.read_voltage()
+        return voltage
 
         if voltage == 9999:
             # you could raise some sort of Exception here if you wanted to
@@ -81,6 +86,8 @@ class Quantum(object):
 
         return micromoles
 
+    def get_voltage(self):
+        return self.read_voltage
     def read_voltage(self):
 
         """This function averages 5 readings over 1 second and returns
@@ -92,10 +99,12 @@ class Quantum(object):
             try:
 
                 self.connect_to_device()
+                print("connected")
 
             except IOError:
 
                 # you can raise some sort of exception here if you need to
+                print("IOError")
 
                 return
 
@@ -113,19 +122,18 @@ class Quantum(object):
 
         number_of_seconds = 1.0
 
+
         for i in range(number_to_average):
 
             try:
-
-                bytes = str.encode(GET_VOLT)
-                self.quantum.write(bytes)
+                self.quantum.write(GET_VOLT.encode('utf-8'))
 
                 response = self.quantum.read(5)[1:]
 
-            except IOError as data:
 
-                print
-                data
+            except IOError:
+
+                print("IOError")
 
                 # dummy value to know something went wrong. could raise an
 
@@ -152,3 +160,5 @@ class Quantum(object):
             return sum(response_list) / len(response_list)
 
         return 0.0
+
+
