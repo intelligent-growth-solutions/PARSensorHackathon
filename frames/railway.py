@@ -29,7 +29,7 @@ class Railway:
         label = ttk.Label(frame, text="Example tab")
         label.grid(column=0,
                    row=0,
-                   padx=30,
+                   padx=100,
                    pady=10)
 
     def add_take_readings_button(self, frame: Frame):
@@ -85,9 +85,9 @@ class Railway:
     def get_data(self):
         return [
             [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4],
-            [0, 1, 2, 3, 4]
+            [1, 2, 3, 4, 5],
+            [2, 3, 4, 5, 6],
+            [3, 4, 5, 6, 7],
+            [4, 5, 6, 7, 8]
          ]
 
