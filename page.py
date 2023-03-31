@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
-from frames import railway
+import railway
+
 
 class Page():
     def __init__(self):

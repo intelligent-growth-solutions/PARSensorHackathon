@@ -2,12 +2,10 @@ from array import array
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import numpy as np
-import time
+
 
 class Railway:
     def __init__(self, root, readings):
