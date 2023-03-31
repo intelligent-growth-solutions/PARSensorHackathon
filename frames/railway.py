@@ -10,8 +10,9 @@ import numpy as np
 import time
 
 class Railway:
-    def __init__(self, root):
+    def __init__(self, root, readings):
         self.root = root
+        self.readings = readings
         self.railway_frame = self.add_frame(self.root)
         self.add_label(self.railway_frame)
         self.readings_button = self.add_take_readings_button(self.railway_frame)
@@ -70,6 +71,7 @@ class Railway:
         tray_width = 500
         tray_height = 800
 
+        i = 0
         coords: array[int, int, float] = []
 
         for x in range(5):
@@ -77,8 +79,9 @@ class Railway:
                 coords.append((
                     int(((tray_width * x/5) + (tray_width * 1/2))),
                     int(((tray_height * y/5) + (tray_height * 1/2))),
-                    (data[x][y])
+                    (data[i])
                 ))
+                i += 1
 
         return coords
 
