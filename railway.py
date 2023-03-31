@@ -66,20 +66,18 @@ class Railway:
         canvas.get_tk_widget().pack()
 
     def generate_pcolourmesh_grid(self, data: list[list[float]]):
-        tray_width = 500
-        tray_height = 800
+        slot_width = 500 / 5
+        slot_height = 800 / 5
 
-        i = 0
         coords: array[int, int, float] = []
 
         for x in range(5):
             for y in range(5):
                 coords.append((
-                    int(((tray_width * x/5) + (tray_width * 1/2))),
-                    int(((tray_height * y/5) + (tray_height * 1/2))),
-                    (data[i])
+                    int(((slot_width * x) + (slot_width * 1/2))),
+                    int(((slot_height * y) + (slot_height * 1/2))),
+                    (data[x][y])
                 ))
-                i += 1
 
         return coords
 
