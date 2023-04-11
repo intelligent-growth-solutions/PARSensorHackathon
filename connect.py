@@ -61,16 +61,12 @@ class Quantum(object):
 
             self.quantum = None
 
-    def get_voltage(self):
-        voltage = self.read_voltage()
-        print(type(voltage))
-        return voltage
     def get_micromoles(self):
 
         """This function converts the voltage to micromoles"""
 
         voltage = self.read_voltage()
-        return voltage
+
 
         if voltage == 9999:
             # you could raise some sort of Exception here if you wanted to
@@ -86,8 +82,6 @@ class Quantum(object):
 
         return micromoles
 
-    def get_voltage(self):
-        return self.read_voltage
     def read_voltage(self):
 
         """This function averages 5 readings over 1 second and returns

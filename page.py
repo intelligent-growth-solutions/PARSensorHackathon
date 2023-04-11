@@ -2,20 +2,20 @@ from tkinter import *
 from tkinter import ttk
 from frames import railway
 
+
 class Page():
     def __init__(self):
         return
 
-    def create_window(self, readings):
+    def create_window(self):
         root = Tk()
-        self.add_tabs(root, readings)
+        self.add_tabs(root)
         root.mainloop()
 
-    def add_tabs(self, root: Tk, readings):
+    def add_tabs(self, root: Tk):
         tab_control = ttk.Notebook(root)
 
-        railway_frame = railway.Railway(root, readings).get_railway_frame()
+        railway_frame = railway.Railway(root).get_railway_frame()
         tab_control.add(railway_frame, text='Railway')
 
         tab_control.pack(expand=1, fill='both')
-
