@@ -76,7 +76,7 @@ def on_publish(client, userdata, mid):
 
 def on_message(client, userdata, message):
 
-        global killThread
+
         print("Received event: ", message.payload)
         if "TRUE" not in str(message.payload):
             return
@@ -94,7 +94,7 @@ def on_message(client, userdata, message):
                 for i in range(position_index):
                     finalReadings = parControl.get_final_positions()
                     #🤮
-                    writeVal = (positions[i][0],positions[i][1], finalReadings[i])
+                    writeVal = (positions[i][0], positions[i][1], finalReadings[i])
 
                     writer.writerow(writeVal)
 

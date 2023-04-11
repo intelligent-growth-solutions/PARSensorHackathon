@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
-
 from mqttController import MqttController
 
 
@@ -64,22 +63,22 @@ class Railway:
 
     def add_colour_mesh_chart(self):
         readings = self.read_data()
-        print(type(readings))
-        print(readings)
 
         plt.style.use('_mpl-gallery-nogrid')
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(4, 4))
         x, y, z = zip(*readings)
 
-        ax = np.array(z).reshape((int(self.xSteps.get()), int(self.ySteps.get())))
+        data = np.array(z).reshape((int(self.xSteps.get()), int(self.ySteps.get())))
+        im = ax.imshow(data, vmin=min(z), vmax=max(z), cmap='PiYG')
 
-        plt.imshow(ax, cmap='PiYG')
+        fig.subplots_adjust(right=0.8)
+        cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+        fig.colorbar(im, cax=cbar_ax)
 
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
-
-        canvas.get_tk_widget().pack()
+        canvas.get_tk_widget().pack(side="top", fill='both', expand=True)
 
     @staticmethod
     def add_frame(root):
@@ -97,6 +96,7 @@ class Railway:
     @staticmethod
     def width_entry_box(frame: Frame):
         widthEntry = Entry(frame, textvariable="blockWidth")
+        widthEntry.insert(END, 800)
         widthEntry.grid(column=2,
                         row=0,
                         padx=30,
@@ -106,6 +106,7 @@ class Railway:
     @staticmethod
     def height_entry_box(frame: Frame):
         heightEntry = Entry(frame, textvariable="blockHeight")
+        heightEntry.insert(END, 800)
         heightEntry.grid(column=2,
                          row=1,
                          padx=30,
@@ -115,6 +116,7 @@ class Railway:
     @staticmethod
     def x_steps_entry_box(frame: Frame):
         xStepsEntry = ttk.Entry(frame, textvariable="noXSteps")
+        xStepsEntry.insert(END, 10)
         xStepsEntry.grid(column=2,
                          row=2,
                          padx=30,
@@ -124,6 +126,7 @@ class Railway:
     @staticmethod
     def y_steps_entry_box(frame: Frame):
         yStepsEntry = ttk.Entry(frame, textvariable="noYSteps")
+        yStepsEntry.insert(END, 10)
         yStepsEntry.grid(column=2,
                          row=3,
                          padx=30,
