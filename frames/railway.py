@@ -1,4 +1,5 @@
 import multiprocessing
+import threading
 from tkinter import *
 from tkinter import Entry
 from tkinter import messagebox
@@ -48,10 +49,8 @@ class Railway:
 
     def take_readings(self):
         mqtt = MqttController()
-        multiprocessing.Process(
-            mqtt.initialise(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get()))
-        messagebox.showinfo("Data loaded", "Data loaded")
-        #self.readings_button.state(['!disabled'])
+        threading.Thread(target=mqtt.initialise, args=(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get())).start()
+        messagebox.showinfo("Taking Readings...", "Measuring a {} by {} grid".format(self.xSteps.get(),self.ySteps.get(),))
 
     def add_display_readings_button(self, frame: Frame):
         button = ttk.Button(frame, text="Display readings", command=self.add_colour_mesh_chart)
