@@ -1,4 +1,5 @@
 import multiprocessing
+import threading
 from tkinter import *
 from tkinter import Entry
 from tkinter import messagebox
@@ -48,10 +49,8 @@ class Railway:
 
     def take_readings(self):
         mqtt = MqttController()
-        multiprocessing.Process(
-            mqtt.initialise(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get()))
-        messagebox.showinfo("Data loaded", "Data loaded")
-        #self.readings_button.state(['!disabled'])
+        threading.Thread(target=mqtt.initialise, args=(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get())).start()
+        messagebox.showinfo("Taking Readings...", "Measuring a {} by {} grid".format(self.xSteps.get(),self.ySteps.get(),))
 
     def add_display_readings_button(self, frame: Frame):
         button = ttk.Button(frame, text="Display readings", command=self.add_colour_mesh_chart)
@@ -67,7 +66,7 @@ class Railway:
         plt.style.use('_mpl-gallery-nogrid')
 
         fig, ax = plt.subplots(figsize=(4, 4))
-        x, y, z = zip(*readings)
+        y, x, z = zip(*readings)
 
         data = np.array(z).reshape((int(self.xSteps.get()), int(self.ySteps.get())))
         im = ax.imshow(data, vmin=min(z), vmax=max(z), cmap='PiYG')
@@ -96,7 +95,7 @@ class Railway:
     @staticmethod
     def width_entry_box(frame: Frame):
         widthEntry = Entry(frame, textvariable="blockWidth")
-        widthEntry.insert(END, 800)
+        widthEntry.insert(END, 842)
         widthEntry.grid(column=2,
                         row=0,
                         padx=30,
@@ -106,7 +105,7 @@ class Railway:
     @staticmethod
     def height_entry_box(frame: Frame):
         heightEntry = Entry(frame, textvariable="blockHeight")
-        heightEntry.insert(END, 800)
+        heightEntry.insert(END, 520)
         heightEntry.grid(column=2,
                          row=1,
                          padx=30,

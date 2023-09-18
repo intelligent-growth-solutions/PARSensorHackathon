@@ -31,7 +31,7 @@ class MqttController():
         client.username_pw_set(username="igstest", password="testigs18")
         client.connect(host="51.141.82.199", port=1883)
 
-        self.go_to_next_position()
+        go_to_next_position(client)
 
         client.loop_forever()
 
@@ -52,13 +52,17 @@ class MqttController():
 
 
 
-    def go_to_next_position(self):
+def go_to_next_position(client):
             global position_index
 
+            pos_x = positions[position_index][0]
+            pos_y = positions[position_index][1]
+
             # send desired position
-            print("Sending to position: ", positions[position_index])
-            # client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(pos_x, pos_y), qos=1)
-            # client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(pos_x, pos_y), qos=1)
+            print("Sending to position: ({}, {})".format(pos_x, pos_y))
+            print("Position Index: ", position_index)
+
+            client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(pos_x, pos_y), qos=1)
 
             position_index += 1
 
@@ -101,9 +105,9 @@ def on_message(client, userdata, message):
             process = multiprocessing.current_process()
             process.terminate()
 
+        number = 1+1
 
-
-        MqttController.go_to_next_position(client)
+        go_to_next_position(client)
 
 def on_subscribe(client, userdata, mid, qos):
         print("subscribed")
