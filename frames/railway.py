@@ -25,6 +25,7 @@ class Railway:
         self.heightEntry = self.height_entry_box(self.railway_frame)
         self.xSteps = self.x_steps_entry_box(self.railway_frame)
         self.ySteps = self.y_steps_entry_box(self.railway_frame)
+        self.segmentEntry = self.segment_entry_box(self.railway_frame)
 
         self.take_readings_button = self.add_take_readings_button(self.railway_frame)
         self.display_readings_button = self.add_display_readings_button(self.railway_frame)
@@ -49,7 +50,8 @@ class Railway:
 
     def take_readings(self):
         mqtt = MqttController()
-        threading.Thread(target=mqtt.initialise, args=(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get())).start()
+        #threading.Thread(target=mqtt.initialise, args=(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get(), self.segmentEntry.get())).start()
+        multiprocessing.Process(target=mqtt.initialise, args=(self.widthEntry.get(), self.heightEntry.get(), self.xSteps.get(), self.ySteps.get(), self.segmentEntry.get())).start()
         messagebox.showinfo("Taking Readings...", "Measuring a {} by {} grid".format(self.xSteps.get(),self.ySteps.get(),))
 
     def add_display_readings_button(self, frame: Frame):
@@ -69,7 +71,7 @@ class Railway:
         y, x, z = zip(*readings)
 
         data = np.array(z).reshape((int(self.xSteps.get()), int(self.ySteps.get())))
-        im = ax.imshow(data, vmin=min(z), vmax=max(z), cmap='PiYG')
+        im = ax.imshow(data, vmin=min(z), vmax=max(z), cmap='PiYG', origin='lower')
 
         fig.subplots_adjust(right=0.8)
         cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
@@ -113,9 +115,19 @@ class Railway:
         return heightEntry
 
     @staticmethod
+    def segment_entry_box(frame: Frame):
+        segmentEntry = Entry(frame, textvariable="segmentEntry")
+        segmentEntry.insert(END, 1)
+        segmentEntry.grid(column=3,
+                          row=1,
+                          padx=30,
+                          pady=10)
+        return segmentEntry
+
+    @staticmethod
     def x_steps_entry_box(frame: Frame):
         xStepsEntry = ttk.Entry(frame, textvariable="noXSteps")
-        xStepsEntry.insert(END, 10)
+        xStepsEntry.insert(END, 6)
         xStepsEntry.grid(column=2,
                          row=2,
                          padx=30,
@@ -125,7 +137,7 @@ class Railway:
     @staticmethod
     def y_steps_entry_box(frame: Frame):
         yStepsEntry = ttk.Entry(frame, textvariable="noYSteps")
-        yStepsEntry.insert(END, 10)
+        yStepsEntry.insert(END, 3)
         yStepsEntry.grid(column=2,
                          row=3,
                          padx=30,
@@ -138,6 +150,7 @@ class Railway:
         heightLabel = ttk.Label(frame, text="Y Axis Length(800)")
         xSteps = ttk.Label(frame, text="No. X steps(3)")
         ySteps = ttk.Label(frame, text="No. Y steps(3)")
+        currentSegment = ttk.Label(frame, text="Current segment")
 
         widthLabel.grid(
             column=1,
@@ -160,6 +173,12 @@ class Railway:
         ySteps.grid(
             column=1,
             row=3,
+            padx=30,
+            pady=10
+        )
+        currentSegment.grid(
+            column=3,
+            row=0,
             padx=30,
             pady=10
         )

@@ -14,8 +14,10 @@ class ParSensorController():
         print("Reading sensor value")
         sensor = connect.Quantum()
         sensor.read_voltage()
-        print(sensor.read_voltage())
-        final_readings.append(sensor.read_voltage())
+        return sensor.read_voltage()
+        # print(sensor.read_voltage())
+        # final_readings.append(sensor.read_voltage())
+
 
     def get_final_positions(self):
         return final_readings

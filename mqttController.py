@@ -1,10 +1,13 @@
 import multiprocessing
 import csv
+import sys
+
 import paho.mqtt.client as mqtt
 from parSensorController import ParSensorController
 
 position_index = 0
 positions = []
+outputArray = []
 xSteps = 0
 ySteps = 0
 
@@ -12,12 +15,14 @@ class MqttController():
     def __init__(self):
         return
 
-    def initialise(self, blockWidth, blockHeight, noXSteps, noYSteps):
+    def initialise(self, blockWidth, blockHeight, noXSteps, noYSteps, curSegment):
         global positions
         global xSteps
         global ySteps
+        global segment
         xSteps = int(noXSteps)
         ySteps = int(noYSteps)
+        segment = curSegment
         self.createPositions(blockWidth, blockHeight, noXSteps, noYSteps)
 
         client = mqtt.Client(client_id="onpar", protocol=mqtt.MQTTv311)
@@ -64,8 +69,6 @@ def go_to_next_position(client):
 
             client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(pos_x, pos_y), qos=1)
 
-            position_index += 1
-
 def on_connect(client, userdata, flags, rc):
         print("Device connected with result code: " + str(rc))
         client.subscribe("dt/plc/onpar/inposition", qos=0)
@@ -79,6 +82,8 @@ def on_publish(client, userdata, mid):
         return
 
 def on_message(client, userdata, message):
+        global position_index
+        global segment
 
 
         print("Received event: ", message.payload)
@@ -86,27 +91,58 @@ def on_message(client, userdata, message):
             return
 
         parControl = ParSensorController()
-        parControl.read_on_par()
+        val = parControl.read_on_par()
+
+        #clever way to determine the theoretical coordinate using an incrementing counter
+
+        x = position_index / 3
+        y = position_index % 3
+
+        # disgusting🤮
+        segmentMap = {
+            1: (0, 0),
+            2: (3, 0),
+            3: (6, 0),
+            4: (9, 0),
+            5: (12, 0),
+            6: (15, 0),
+            7: (16, 0),
+            8: (16, 6),
+            9: (15, 6),
+            10: (12, 6),
+            11: (9, 6),
+            12: (6, 6),
+            13: (3, 6),
+            14: (0, 6)
+        }
+
+        x = x + segmentMap[int(segment)][1]
+        y = y + segmentMap[int(segment)][0]
+
+        print(position_index)
+        print([int(x), y, val])
+        outputArray.append([int(x), y, val])
+
 
         # THIS IS WHEN WE RETURN
-        if position_index == xSteps*ySteps:
+        if position_index+1 == xSteps*ySteps:
             # open the file in the write mode
-            with open('results.csv', 'w', newline='') as f:
-                # create the csv writer
-                writer = csv.writer(f)
+            try:
+                with open('segments/results{}.csv'.format(segment), 'x', newline='') as f:
+                    # create the csv writer
+                    writer = csv.writer(f)
+                    writer.writerows(outputArray)
+            except FileExistsError:
+                with open('segments/results{}.csv'.format(segment), 'w', newline='') as f:
+                    # create the csv writer
+                    writer = csv.writer(f)
+                    writer.writerows(outputArray)
 
-                for i in range(position_index):
-                    finalReadings = parControl.get_final_positions()
-                    #🤮
-                    writeVal = (positions[i][0], positions[i][1], finalReadings[i])
+            # process = multiprocessing.current_process()
+            # process.terminate()
+            sys.exit()
 
-                    writer.writerow(writeVal)
-
-            process = multiprocessing.current_process()
-            process.terminate()
-
-        number = 1+1
-
+        position_index += 1
         go_to_next_position(client)
 
 def on_subscribe(client, userdata, mid, qos):
