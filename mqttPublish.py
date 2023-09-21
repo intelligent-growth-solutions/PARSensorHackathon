@@ -5,11 +5,11 @@ import sys
 import paho.mqtt.client as mqtt
 from parSensorController import ParSensorController
 
-class mqttPublish():
+class MqttPublish():
     def __init__(self):
         return
 
-    def initialise(self):
+    def initialise(self, var):
         client = mqtt.Client(client_id="onpar", protocol=mqtt.MQTTv311)
 
         client.on_disconnect = on_disconnect
@@ -20,14 +20,28 @@ class mqttPublish():
 
         client.username_pw_set(username="igstest", password="testigs18")
         client.connect(host="51.141.82.199", port=1883)
+
+        send_message_string(client, var)
+
         client.loop_forever()
 
-        send_message_string(client)
 
-def send_message_string(client):
-    x=42
-    y=26
-    client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(x, y), qos=1)
+def send_message_string(client, var):
+
+
+
+    match var:
+        case 0:
+            print("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(10, 10))
+            client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(10, 10), qos=1)
+        case 1:
+            print("cmd/plc/onpar/position", 'DISABLE')
+            client.publish("cmd/plc/onpar/position", 'DISABLE', qos=1)
+        case 2:
+            print("cmd/plc/onpar/position", 'RESET')
+            client.publish("cmd/plc/onpar/position", 'RESET', qos=1)
+
+    sys.exit()
 
 
 def on_connect(client, userdata, flags, rc):

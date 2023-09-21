@@ -81,12 +81,20 @@ def on_disconnect(client, userdata, rc):
 def on_publish(client, userdata, mid):
         return
 
+def error_path():
+
+    sys.exit()
 def on_message(client, userdata, message):
         global position_index
         global segment
 
 
         print("Received event: ", message.payload)
+
+        if "ERROR" in str(message.payload):
+            error_path()
+
+
         if "TRUE" not in str(message.payload):
             return
 

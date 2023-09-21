@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg)
 from mqttController import MqttController
+from mqttPublish import MqttPublish
 
 
 class Railway:
@@ -29,6 +30,10 @@ class Railway:
 
         self.take_readings_button = self.add_take_readings_button(self.railway_frame)
         self.display_readings_button = self.add_display_readings_button(self.railway_frame)
+
+        self.zero_button = self.add_zero_button(self.railway_frame)
+        self.reset_button = self.add_reset_button(self.railway_frame)
+        self.disable_steppers_button = self.add_disable_steppers_button(self.railway_frame)
 
     def get_railway_frame(self):
         return self.railway_frame
@@ -61,6 +66,46 @@ class Railway:
                     padx=30,
                     pady=10)
         return button
+
+    def add_zero_button(self, frame: Frame):
+        button = ttk.Button(frame, text="Zero", command=self.zero)
+        button.grid(column=0,
+                    row=3,
+                    padx=30,
+                    pady=10)
+        return button
+
+    def zero(self):
+        mqtt = MqttPublish()
+        var = 0
+        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
+
+
+    def add_disable_steppers_button(self, frame: Frame):
+        button = ttk.Button(frame, text="Disable Steppers", command=self.disable_steppers)
+        button.grid(column=3,
+                    row=2,
+                    padx=30,
+                    pady=10)
+        return button
+
+    def disable_steppers(self):
+        mqtt = MqttPublish()
+        var = 1
+        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
+
+    def add_reset_button(self, frame: Frame):
+        button = ttk.Button(frame, text="Reset", command=self.reset_rail)
+        button.grid(column=3,
+                    row=3,
+                    padx=30,
+                    pady=10)
+        return button
+
+    def reset_rail(self):
+        mqtt = MqttPublish()
+        var = 2
+        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
 
     def add_colour_mesh_chart(self):
         readings = self.read_data()
