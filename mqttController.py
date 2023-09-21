@@ -82,7 +82,7 @@ def on_publish(client, userdata, mid):
         return
 
 def error_path():
-
+    print("Error")
     sys.exit()
 def on_message(client, userdata, message):
         global position_index

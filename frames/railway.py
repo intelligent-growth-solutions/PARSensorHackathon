@@ -27,12 +27,16 @@ class Railway:
         self.xSteps = self.x_steps_entry_box(self.railway_frame)
         self.ySteps = self.y_steps_entry_box(self.railway_frame)
         self.segmentEntry = self.segment_entry_box(self.railway_frame)
+        self.manualXEntry = self.add_manual_x_input_box(self.railway_frame)
+        self.manualYEntry = self.add_manual_y_input_box(self.railway_frame)
 
         self.take_readings_button = self.add_take_readings_button(self.railway_frame)
         self.display_readings_button = self.add_display_readings_button(self.railway_frame)
 
         self.zero_button = self.add_zero_button(self.railway_frame)
+        self.goto_coords_button = self.add_goto_coords_button(self.railway_frame)
         self.reset_button = self.add_reset_button(self.railway_frame)
+        self.set_home_button = self.add_set_home_button(self.railway_frame)
         self.disable_steppers_button = self.add_disable_steppers_button(self.railway_frame)
 
     def get_railway_frame(self):
@@ -67,6 +71,19 @@ class Railway:
                     pady=10)
         return button
 
+    def add_goto_coords_button(self, frame: Frame):
+        button = ttk.Button(frame, text="goto coords", command=self.goto_coords)
+        button.grid(column=4,
+                    row=2,
+                    padx=30,
+                    pady=10)
+        return button
+
+    def goto_coords(self):
+        mqtt = MqttPublish()
+        var = 4
+        multiprocessing.Process(target=mqtt.initialise, args=(var,self.manualXEntry.get(), self.manualYEntry.get())).start()
+
     def add_zero_button(self, frame: Frame):
         button = ttk.Button(frame, text="Zero", command=self.zero)
         button.grid(column=0,
@@ -78,8 +95,20 @@ class Railway:
     def zero(self):
         mqtt = MqttPublish()
         var = 0
-        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
+        multiprocessing.Process(target=mqtt.initialise, args=(var,self.manualXEntry.get(), self.manualYEntry.get())).start()
 
+    def add_set_home_button(self, frame: Frame):
+        button = ttk.Button(frame, text="SET_HOME", command=self.set_home)
+        button.grid(column=4,
+                    row=3,
+                    padx=30,
+                    pady=10)
+        return button
+
+    def set_home(self):
+        mqtt = MqttPublish()
+        var = 3
+        multiprocessing.Process(target=mqtt.initialise, args=(var,self.manualXEntry.get(), self.manualYEntry.get())).start()
 
     def add_disable_steppers_button(self, frame: Frame):
         button = ttk.Button(frame, text="Disable Steppers", command=self.disable_steppers)
@@ -92,7 +121,7 @@ class Railway:
     def disable_steppers(self):
         mqtt = MqttPublish()
         var = 1
-        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
+        multiprocessing.Process(target=mqtt.initialise, args=(var,self.manualXEntry.get(), self.manualYEntry.get())).start()
 
     def add_reset_button(self, frame: Frame):
         button = ttk.Button(frame, text="Reset", command=self.reset_rail)
@@ -105,7 +134,7 @@ class Railway:
     def reset_rail(self):
         mqtt = MqttPublish()
         var = 2
-        multiprocessing.Process(target=mqtt.initialise, args=(var,)).start()
+        multiprocessing.Process(target=mqtt.initialise, args=(var,self.manualXEntry.get(), self.manualYEntry.get())).start()
 
     def add_colour_mesh_chart(self):
         readings = self.read_data()
@@ -227,6 +256,26 @@ class Railway:
             padx=30,
             pady=10
         )
+
+    @staticmethod
+    def add_manual_x_input_box(frame: Frame):
+        manualXEntry = Entry(frame, textvariable="manualXEntry")
+        manualXEntry.insert(END, 50)
+        manualXEntry.grid(column=4,
+                        row=0,
+                        padx=30,
+                        pady=10)
+        return manualXEntry
+
+    @staticmethod
+    def add_manual_y_input_box(frame: Frame):
+        manualYEntry = Entry(frame, textvariable="manualYEntry")
+        manualYEntry.insert(END, 50)
+        manualYEntry.grid(column=4,
+                        row=1,
+                        padx=30,
+                        pady=10)
+        return manualYEntry
 
     @staticmethod
     def read_data():

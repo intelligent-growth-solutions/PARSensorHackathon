@@ -9,7 +9,7 @@ class MqttPublish():
     def __init__(self):
         return
 
-    def initialise(self, var):
+    def initialise(self, var, x, y):
         client = mqtt.Client(client_id="onpar", protocol=mqtt.MQTTv311)
 
         client.on_disconnect = on_disconnect
@@ -21,25 +21,31 @@ class MqttPublish():
         client.username_pw_set(username="igstest", password="testigs18")
         client.connect(host="51.141.82.199", port=1883)
 
-        send_message_string(client, var)
+        send_message_string(client, var, x, y)
 
         client.loop_forever()
 
 
-def send_message_string(client, var):
+def send_message_string(client, var, x, y):
 
 
 
     match var:
         case 0:
             print("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(10, 10))
-            client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(10, 10), qos=1)
+            client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(0, 0), qos=1)
         case 1:
             print("cmd/plc/onpar/position", 'DISABLE')
             client.publish("cmd/plc/onpar/position", 'DISABLE', qos=1)
         case 2:
             print("cmd/plc/onpar/position", 'RESET')
             client.publish("cmd/plc/onpar/position", 'RESET', qos=1)
+        case 3:
+            print("cmd/plc/onpar/position", 'SET_HOME')
+            client.publish("cmd/plc/onpar/position", 'SET_HOME', qos=1)
+        case 4:
+            print("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(x, y))
+            client.publish("cmd/plc/onpar/position", '{{"X":{},"Y":{}}}'.format(x, y), qos=1)
 
     sys.exit()
 
