@@ -1,0 +1,13 @@
+openapi: 3.0.1
+info:
+  title: Parsensorhackathon
+  description: ON PAR light sensor repo
+  x-cortex-git:
+    github:
+      repository: intelligent-growth-solutions/PARSensorHackathon
+  x-cortex-tag: parsensorhackathon
+  x-cortex-type: poc
+  x-cortex-owners:
+    - type: group
+      name: intelligent-growth-solutions/user-apps
+      provider: GITHUB
